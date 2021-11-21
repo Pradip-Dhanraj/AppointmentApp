@@ -1,0 +1,18 @@
+{
+  "appTitle": "flutterfeatures",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "morning": "Morning",
+  "@morning": {
+    "description": "Morning text"
+  },
+  "evening": "Evening",
+  "@evening": {
+    "description": "Evening text"
+  },
+  "availableSlots": "Available slots",
+  "@availableSlots": {
+    "description": "Available slots"
+  }
+}
