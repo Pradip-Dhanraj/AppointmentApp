@@ -1,6 +1,6 @@
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterfeatures/src/views/dashboard/slot_view.dart';
+import 'package:flutterfeatures/src/views/dashboard/slot_view_animated.dart';
 import 'package:flutterfeatures/src/views/login/login_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -58,6 +58,19 @@ class _LoginViewState extends State<LoginView> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          Row(
+                            children: [
+                              const Spacer(),
+                              InkWell(
+                                onTap: () {},
+                                child: Icon(
+                                  Icons.settings,
+                                  color: Colors.blueGrey,
+                                  size: builder.maxHeight * 0.04,
+                                ),
+                              ),
+                            ],
+                          ),
                           const Padding(
                             padding: EdgeInsets.all(
                               20,
@@ -181,17 +194,13 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                   Flexible(
-                      flex: 1,
-                      fit: FlexFit.tight,
-                      child: GridView.count(
-                        crossAxisCount: 3,
-                        children: List.generate(12, (index) {
-                          return SlotView(
-                            time: "Item $index",
-                            isBooked: true,
-                          );
-                        }),
-                      ))
+                    flex: 1,
+                    fit: FlexFit.tight,
+                    child: GridView.count(
+                      crossAxisCount: 3,
+                      children: getAppointmentList(),
+                    ),
+                  ),
                 ],
               );
             },
@@ -199,6 +208,27 @@ class _LoginViewState extends State<LoginView> {
         );
       }),
     );
+  }
+
+  List<Widget> getAppointmentList() {
+    var lst = List.generate(3, (index) {
+      return SlotView(
+        time: "time slot $index",
+        isBooked: false,
+      );
+    });
+    lst.insert(
+        0,
+        const SlotView(
+          time: '',
+          isBooked: true,
+          icon: Icon(
+            Icons.add,
+            color: Colors.black,
+            size: 50,
+          ),
+        ));
+    return lst;
   }
 
   _tapAppoinment(bool isMorningShift) {

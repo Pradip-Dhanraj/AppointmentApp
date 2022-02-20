@@ -11,7 +11,7 @@ class SlotView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var slotColor = isBooked ? Colors.redAccent[100] : Colors.greenAccent;
-    var textColor = isBooked ? Colors.white : Colors.teal[200];
+    var textColor = isBooked ? Colors.white : Colors.teal;
     var text = isBooked ? "Booked" : "Available";
     return LayoutBuilder(
       builder: (context, builder) {
@@ -28,7 +28,11 @@ class SlotView extends StatelessWidget {
                 color: textColor,
               );
         return Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10, bottom: 15),
+          padding: const EdgeInsets.only(
+            left: 10,
+            right: 10,
+            bottom: 15,
+          ),
           child: Container(
             padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(

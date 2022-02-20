@@ -14,15 +14,16 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  get_it: ^6.0.0
   connectivity: ^3.0.6
-  calendar_timeline: ^1.0.3-null-safety.0
+  calendar_timeline: ^1.0.4
+  get_it: ^7.2.0
+  http: ^0.13.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^1.0.0
+  flutter_lints: ^1.0.4
 
 flutter:
   uses-material-design: true
