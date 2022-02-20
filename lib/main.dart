@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutterfeatures/src/views/appointment/appointment_controller.dart';
+import 'package:flutterfeatures/src/views/appointment/appointment_service.dart';
 import 'package:flutterfeatures/src/views/login/login_controller.dart';
 import 'src/app.dart';
 import 'src/settings/settings_controller.dart';
@@ -18,11 +20,16 @@ void main() async {
 
   await loginController.init();
 
+  final appointmentController = AppointmentController(AppointmentService());
+
+  await loginController.init();
+
   // Run the app and pass in the SettingsController. The app listens to the
   // SettingsController for changes, then passes it further down to the
   // SettingsView.
   runApp(MyApp(
     settingsController: settingsController,
     loginController: loginController,
+    appointmentController: appointmentController,
   ));
 }

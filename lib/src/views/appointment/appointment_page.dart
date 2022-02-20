@@ -1,20 +1,21 @@
 import 'package:calendar_timeline/calendar_timeline.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfeatures/src/views/appointment/slot_view_animated.dart';
-import 'package:flutterfeatures/src/views/login/login_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'appointment_controller.dart';
 
-class LoginView extends StatefulWidget {
-  const LoginView({Key? key, required this.controller}) : super(key: key);
-  static const routeName = '/login';
+class AppointmentPage extends StatefulWidget {
+  const AppointmentPage({Key? key, required this.controller}) : super(key: key);
+  static const routeName = '/appointment';
 
-  final LoginController controller;
+  final AppointmentController controller;
 
   @override
-  _LoginViewState createState() => _LoginViewState();
+  _AppointmentPageState createState() => _AppointmentPageState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _AppointmentPageState extends State<AppointmentPage> {
   late bool _isMorningAppointment;
 
   @override
@@ -112,7 +113,7 @@ class _LoginViewState extends State<LoginView> {
                         onTap: () {
                           _tapAppoinment(true);
                         },
-                        child: Container(
+                        child: AnimatedContainer(
                           width: builder.maxWidth * 0.45,
                           decoration: BoxDecoration(
                             color: _isMorningAppointment
@@ -125,6 +126,9 @@ class _LoginViewState extends State<LoginView> {
                           padding: const EdgeInsets.symmetric(
                             horizontal: 40,
                             vertical: 15,
+                          ),
+                          duration: const Duration(
+                            milliseconds: 300,
                           ),
                           child: Text(
                             AppLocalizations.of(context)!.morning,
@@ -150,7 +154,7 @@ class _LoginViewState extends State<LoginView> {
                         onTap: () {
                           _tapAppoinment(false);
                         },
-                        child: Container(
+                        child: AnimatedContainer(
                           width: builder.maxWidth * 0.45,
                           decoration: BoxDecoration(
                             color: _isMorningAppointment
@@ -163,6 +167,9 @@ class _LoginViewState extends State<LoginView> {
                           padding: const EdgeInsets.symmetric(
                             horizontal: 40,
                             vertical: 15,
+                          ),
+                          duration: const Duration(
+                            milliseconds: 300,
                           ),
                           child: Text(
                             AppLocalizations.of(context)!.evening,
@@ -186,19 +193,20 @@ class _LoginViewState extends State<LoginView> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Text(
-                    AppLocalizations.of(context)!.availableSlots,
-                    style: TextStyle(
-                      color: Colors.teal[400],
-                      fontSize: LargeTextSize * 1.2,
-                    ),
-                  ),
                   Flexible(
                     flex: 1,
                     fit: FlexFit.tight,
-                    child: GridView.count(
-                      crossAxisCount: 3,
-                      children: getAppointmentList(),
+                    child: FutureBuilder(
+                      future: widget.controller.getAppointments(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<dynamic> snapshot) {
+                        return snapshot.hasData
+                            ? GridView.count(
+                                crossAxisCount: 3,
+                                children: getAppointmentList(),
+                              )
+                            : const CupertinoActivityIndicator();
+                      },
                     ),
                   ),
                 ],
@@ -211,12 +219,12 @@ class _LoginViewState extends State<LoginView> {
   }
 
   List<Widget> getAppointmentList() {
-    var lst = List.generate(3, (index) {
-      return SlotView(
-        time: "time slot $index",
-        isBooked: false,
-      );
-    });
+    var lst = widget.controller.appointmentList!
+        .map((index) => SlotView(
+              time: "time slot $index",
+              isBooked: false,
+            ))
+        .toList();
     lst.insert(
         0,
         const SlotView(
@@ -224,7 +232,7 @@ class _LoginViewState extends State<LoginView> {
           isBooked: true,
           icon: Icon(
             Icons.add,
-            color: Colors.black,
+            color: Colors.teal,
             size: 50,
           ),
         ));

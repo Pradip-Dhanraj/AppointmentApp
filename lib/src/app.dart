@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutterfeatures/src/views/appointment/appointment_controller.dart';
+import 'package:flutterfeatures/src/views/appointment/appointment_page.dart';
 import 'package:flutterfeatures/src/views/login/login_controller.dart';
 import 'package:flutterfeatures/src/views/login/login_view.dart';
-
 import 'sample_feature/sample_item_details_view.dart';
 import 'sample_feature/sample_item_list_view.dart';
 import 'settings/settings_controller.dart';
@@ -11,14 +12,16 @@ import 'settings/settings_view.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
-  const MyApp(
-      {Key? key,
-      required this.settingsController,
-      required this.loginController})
-      : super(key: key);
+  const MyApp({
+    Key? key,
+    required this.settingsController,
+    required this.loginController,
+    required this.appointmentController,
+  }) : super(key: key);
 
   final SettingsController settingsController;
   final LoginController loginController;
+  final AppointmentController appointmentController;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +66,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(),
           darkTheme: ThemeData.dark(),
           themeMode: settingsController.themeMode,
-          initialRoute: LoginView.routeName,
+          initialRoute: AppointmentPage.routeName,
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
           onGenerateRoute: (RouteSettings routeSettings) {
@@ -78,6 +81,10 @@ class MyApp extends StatelessWidget {
                   case LoginView.routeName:
                     return LoginView(
                       controller: loginController,
+                    );
+                  case AppointmentPage.routeName:
+                    return AppointmentPage(
+                      controller: appointmentController,
                     );
                   default:
                     return const SampleItemListView();

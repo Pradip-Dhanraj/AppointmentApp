@@ -51,7 +51,8 @@ class _SlotViewState extends State<SlotView> {
       ),
       () => setState(() => eleveted = !eleveted),
     );
-    if (allowOverridingIcon) {
+    if (!allowOverridingIcon) {
+      setState(() => isBooked = !isBooked);
     } else {}
   }
 
@@ -89,7 +90,7 @@ class _SlotViewState extends State<SlotView> {
               color: textColor,
             ),
             secondChild: Icon(
-              Icons.add_task,
+              Icons.pending,
               size: fontSize * 1,
               color: textColor,
             ),
