@@ -1,6 +1,8 @@
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterfeatures/src/views/widgets/animated_tap_widget.dart';
+import 'package:flutterfeatures/src/views/appointment/appointment_bottomsheet.dart';
 import 'package:flutterfeatures/src/views/appointment/slot_view_animated.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'appointment_controller.dart';
@@ -17,10 +19,15 @@ class AppointmentPage extends StatefulWidget {
 
 class _AppointmentPageState extends State<AppointmentPage> {
   late bool _isMorningAppointment;
+  late TextEditingController usernameController;
 
   @override
   void initState() {
     _isMorningAppointment = true;
+    usernameController = TextEditingController();
+    usernameController.addListener(() {
+      widget.controller.setusername(usernameController.text);
+    });
     super.initState();
   }
 
@@ -56,50 +63,85 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         horizontal: 10,
                         vertical: 10,
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            children: [
-                              const Spacer(),
-                              InkWell(
-                                onTap: () {},
-                                child: Icon(
-                                  Icons.settings,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                AnimatedTapWidget(
+                                  onTap: () {
+                                    showBottomDrawer(context,
+                                        fontSize: LargeTextSize * 3);
+                                  },
+                                  widget: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Icon(
+                                      Icons.add_box,
+                                      color: Colors.blueGrey,
+                                      size: MediumTextSize * 2,
+                                    ),
+                                  ),
+                                ),
+                                const Spacer(),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0,
+                                  ),
+                                  child: AnimatedTapWidget(
+                                    onTap: () {},
+                                    widget: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Icon(
+                                        Icons.refresh,
+                                        color: Colors.blueGrey,
+                                        size: builder.maxHeight * 0.04,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                AnimatedTapWidget(
+                                  onTap: () {},
+                                  widget: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Icon(
+                                      Icons.settings,
+                                      color: Colors.blueGrey,
+                                      size: builder.maxHeight * 0.04,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.all(
+                                20,
+                              ),
+                              child: Text(
+                                "Appointment Dates",
+                                style: TextStyle(
+                                  fontSize: 30,
                                   color: Colors.blueGrey,
-                                  size: builder.maxHeight * 0.04,
                                 ),
                               ),
-                            ],
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.all(
-                              20,
                             ),
-                            child: Text(
-                              "Appointment Dates",
-                              style: TextStyle(
-                                fontSize: 30,
-                                color: Colors.blueGrey,
-                              ),
+                            CalendarTimeline(
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime.now(),
+                              lastDate:
+                                  DateTime.now().add(const Duration(days: 5)),
+                              onDateSelected: (date) => print(date),
+                              leftMargin: 20,
+                              monthColor: Colors.blueGrey,
+                              dayColor: Colors.teal[200],
+                              activeDayColor: Colors.white,
+                              activeBackgroundDayColor: Colors.redAccent[100],
+                              dotsColor: const Color(0xFF333A47),
+                              selectableDayPredicate: (date) => date.day != 23,
+                              locale: 'en_ISO',
                             ),
-                          ),
-                          CalendarTimeline(
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime.now(),
-                            lastDate:
-                                DateTime.now().add(const Duration(days: 5)),
-                            onDateSelected: (date) => print(date),
-                            leftMargin: 20,
-                            monthColor: Colors.blueGrey,
-                            dayColor: Colors.teal[200],
-                            activeDayColor: Colors.white,
-                            activeBackgroundDayColor: Colors.redAccent[100],
-                            dotsColor: const Color(0xFF333A47),
-                            selectableDayPredicate: (date) => date.day != 23,
-                            locale: 'en_ISO',
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -116,6 +158,22 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         child: AnimatedContainer(
                           width: builder.maxWidth * 0.45,
                           decoration: BoxDecoration(
+                            boxShadow: _isMorningAppointment
+                                ? [
+                                    BoxShadow(
+                                      color: Colors.grey.shade500,
+                                      offset: const Offset(4, 4),
+                                      blurRadius: 15,
+                                      spreadRadius: 1,
+                                    ),
+                                    const BoxShadow(
+                                      color: Colors.white,
+                                      offset: Offset(-4, -4),
+                                      blurRadius: 15,
+                                      spreadRadius: 1,
+                                    ),
+                                  ]
+                                : null,
                             color: _isMorningAppointment
                                 ? Colors.redAccent[100]
                                 : Colors.greenAccent,
@@ -128,7 +186,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                             vertical: 15,
                           ),
                           duration: const Duration(
-                            milliseconds: 300,
+                            milliseconds: 400,
                           ),
                           child: Text(
                             AppLocalizations.of(context)!.morning,
@@ -157,6 +215,22 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         child: AnimatedContainer(
                           width: builder.maxWidth * 0.45,
                           decoration: BoxDecoration(
+                            boxShadow: !_isMorningAppointment
+                                ? [
+                                    BoxShadow(
+                                      color: Colors.grey.shade500,
+                                      offset: const Offset(4, 4),
+                                      blurRadius: 15,
+                                      spreadRadius: 1,
+                                    ),
+                                    const BoxShadow(
+                                      color: Colors.white,
+                                      offset: Offset(-4, -4),
+                                      blurRadius: 15,
+                                      spreadRadius: 1,
+                                    ),
+                                  ]
+                                : null,
                             color: _isMorningAppointment
                                 ? Colors.greenAccent
                                 : Colors.redAccent[100],
@@ -169,7 +243,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                             vertical: 15,
                           ),
                           duration: const Duration(
-                            milliseconds: 300,
+                            milliseconds: 400,
                           ),
                           child: Text(
                             AppLocalizations.of(context)!.evening,
@@ -190,23 +264,64 @@ class _AppointmentPageState extends State<AppointmentPage> {
                       )
                     ],
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
                   Flexible(
                     flex: 1,
                     fit: FlexFit.tight,
-                    child: FutureBuilder(
-                      future: widget.controller.getAppointments(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<dynamic> snapshot) {
-                        return snapshot.hasData
-                            ? GridView.count(
-                                crossAxisCount: 3,
-                                children: getAppointmentList(),
-                              )
-                            : const CupertinoActivityIndicator();
-                      },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                      ),
+                      child: FutureBuilder(
+                        future: widget.controller.getAppointments(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<dynamic> snapshot) {
+                          return snapshot.hasData
+                              ? ListView.builder(
+                                  itemCount: widget
+                                          .controller.appointmentList?.length ??
+                                      0,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Card(
+                                      clipBehavior: Clip.antiAlias,
+                                      elevation: 1,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: ListTile(
+                                        contentPadding:
+                                            const EdgeInsets.all(10.0),
+                                        tileColor: Colors.greenAccent,
+                                        title: Text(
+                                          'Patients name',
+                                          style: getTextStyle(),
+                                        ),
+                                        subtitle: Text(
+                                          'A10021',
+                                          style: getTextStyle(),
+                                        ),
+                                        trailing: AnimatedTapWidget(
+                                          widget: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Icon(
+                                              Icons.mode_edit,
+                                              color: Colors.blueGrey,
+                                              size: LargeTextSize * 1.3,
+                                            ),
+                                          ),
+                                        ),
+                                        dense: true,
+                                        leading: Text(
+                                          'HH:\nmm',
+                                          style: getTextStyle(),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                )
+                              : const CupertinoActivityIndicator();
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -218,6 +333,11 @@ class _AppointmentPageState extends State<AppointmentPage> {
     );
   }
 
+  TextStyle getTextStyle() => const TextStyle(
+        color: Colors.blueGrey,
+        fontSize: 20,
+      );
+
   List<Widget> getAppointmentList() {
     var lst = widget.controller.appointmentList!
         .map((index) => SlotView(
@@ -225,17 +345,6 @@ class _AppointmentPageState extends State<AppointmentPage> {
               isBooked: false,
             ))
         .toList();
-    lst.insert(
-        0,
-        const SlotView(
-          time: '',
-          isBooked: true,
-          icon: Icon(
-            Icons.add,
-            color: Colors.teal,
-            size: 50,
-          ),
-        ));
     return lst;
   }
 
@@ -243,5 +352,23 @@ class _AppointmentPageState extends State<AppointmentPage> {
     setState(() {
       _isMorningAppointment = isMorningShift;
     });
+  }
+
+  void showBottomDrawer(
+    BuildContext context, {
+    fontSize = 50,
+    bool enabled = true,
+  }) async {
+    await showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (BuildContext bc) {
+          return AppointmentBottomSheet(
+              fontSize: fontSize,
+              controller: widget.controller,
+              usernameController: usernameController,
+              onNewModelCreation: () {});
+        });
   }
 }
